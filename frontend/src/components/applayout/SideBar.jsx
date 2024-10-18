@@ -3,16 +3,21 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import BorderColorTwoToneIcon from '@mui/icons-material/BorderColorTwoTone';
 import SpaceDashboardTwoToneIcon from '@mui/icons-material/SpaceDashboardTwoTone';
 import requestApi from "../utils/axios";
-import {jwtDecode} from 'jwt-decode';  
+import { jwtDecode } from 'jwt-decode';
 import "./styles.css";
 import { getDecryptedCookie } from "../utils/encrypt";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
+import FileUploadSharpIcon from '@mui/icons-material/FileUploadSharp';
 
 function getIconComponent(iconPath) {
   switch (iconPath) {
-    case 'BorderColorTwoToneIcon':
-      return <BorderColorTwoToneIcon style={{ color: '#f57d93', fontSize: '30px' }} className="custom-sidebar-icon" />;
-    case 'SpaceDashboardTwoToneIcon':
-      return <SpaceDashboardTwoToneIcon style={{ color: '#05ce78', fontSize: '30px' }} className="custom-sidebar-icon" />;
+    case 'AppRegistrationIcon':
+      return <AppRegistrationIcon style={{ color: '#f57d93', fontSize: '30px' }} className="custom-sidebar-icon" />;
+    case 'DashboardSharpIcon':
+      return <DashboardSharpIcon style={{ color: '#05ce78', fontSize: '30px' }} className="custom-sidebar-icon" />;
+    case 'FileUploadSharpIcon':
+      return <FileUploadSharpIcon style={{ color: '#05ce78', fontSize: '30px' }} className="custom-sidebar-icon" />;
     default:
       return null;
   }
@@ -34,13 +39,13 @@ function SideBar({ open, resource, onSidebarItemSelect, handleSideBar }) {
         }
 
         const decodedToken = jwtDecode(encryptedAuthToken);
-        const { role } = decodedToken; 
+        const { role } = decodedToken;
         // console.log(role)
 
         const response = await requestApi("GET", `/resources?role=${role}`);
 
         if (response.success) {
-          setSidebarItems(response.data); 
+          setSidebarItems(response.data);
         } else {
           console.error("Error fetching sidebar items:", response.error);
         }
@@ -49,7 +54,7 @@ function SideBar({ open, resource, onSidebarItemSelect, handleSideBar }) {
       }
     };
 
-    fetchSidebarItems(); 
+    fetchSidebarItems();
   }, [resource, navigate]);
 
   useEffect(() => {
@@ -58,7 +63,7 @@ function SideBar({ open, resource, onSidebarItemSelect, handleSideBar }) {
     if (activeItem) {
       setActiveItem(activeItem.name);
       if (onSidebarItemSelect) {
-        onSidebarItemSelect(activeItem.name);  
+        onSidebarItemSelect(activeItem.name);
       }
     }
   }, [location, sidebarItems, onSidebarItemSelect]);

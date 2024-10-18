@@ -1,0 +1,125 @@
+.course-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* Four equal columns */
+    gap: 10px;
+    padding: 10px;
+}
+
+.course-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    height: fit-content;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.course-card:hover {
+    background-color: rgba(128, 128, 128, 0.19);
+}
+
+.course-card h2 {
+    font-size: 18px;
+}
+
+
+
+/* Responsive breakpoints */
+@media (max-width: 1200px) {
+    .course-cards {
+        grid-template-columns: repeat(3, 1fr);
+        /* Three equal columns on medium screens */
+    }
+}
+
+@media (max-width: 900px) {
+    .course-cards {
+        grid-template-columns: repeat(2, 1fr);
+        /* Two equal columns on small screens */
+    }
+}
+
+@media (max-width: 600px) {
+    .course-cards {
+        grid-template-columns: 1fr;
+        /* One column on extra small screens */
+    }
+}
+
+
+.c_name {
+    font-size: 18px;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+.course-details {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.course-detail-card {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.course-detail-info {
+    flex-grow: 1;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.register-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #4CAF50;
+    /* Green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.register-button:hover {
+    background-color: #45a049;
+    /* Darker green */
+}
+
+.register-button:disabled {
+    background-color: #ccc;
+    /* Greyed out */
+    cursor: not-allowed;
+}

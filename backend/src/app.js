@@ -21,8 +21,8 @@ const Register = require('./routes/register/register')
 
 
 const morgan_config = morgan(
-    ":method :url :status :res[content-length] - :response-time ms"
-  );
+  ":method :url :status :res[content-length] - :response-time ms"
+);
 
 const app = express();
 const port = process.env.PORT;
@@ -30,28 +30,28 @@ app.use(cookieParser());
 
 // session
 app.use(
-    session({
-      secret: "this is my secrect code",
-      resave: false,
-      saveUninitialized: false,
-      cookie: { secure: false },
-    })
-  );
-  app.use(passport.initialize());
-  app.use(passport.session());
+  session({
+    secret: "this is my secrect code",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // cors
 app.use(express.json());
 const cors_config = {
-    origin: "*",
+  origin: "*",
 };
 app.use(cors(cors_config));
 app.use(morgan_config);
 
 // auth routes
-app.use("/api/auth",auth_routes);
+app.use("/api/auth", auth_routes);
 // api routes
-app.use("/api",resources_routes);
+app.use("/api", resources_routes);
 // middleware
 // app.use([authJWT, limiter, restrictOrigin])
 app.use('/api', Course)
@@ -59,8 +59,8 @@ app.use('/api', Register)
 
 
 
- 
+
 // port
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
