@@ -16,6 +16,8 @@ const restrictOrigin = require('./middleware/restrictOrigins')
 // routes import
 const auth_routes = require('./routes/auth/auth_routes')
 const resources_routes = require('./routes/auth/res_route')
+const Course = require('./routes/course/course')
+const Register = require('./routes/register/register')
 
 
 const morgan_config = morgan(
@@ -52,6 +54,8 @@ app.use("/api/auth", auth_routes);
 app.use("/api", resources_routes);
 // middleware
 // app.use([authJWT, limiter, restrictOrigin])
+app.use('/api', Course)
+app.use('/api', Register)
 
 
 
