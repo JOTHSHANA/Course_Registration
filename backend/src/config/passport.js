@@ -53,13 +53,22 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (gmail, done) => {
   try {
     const query = `
-      SELECT id, name, gmail, NULL AS reg_no, staff_id, role 
+      SELECT id, name, gmail, NULL AS reg_no,NULL AS department, staff_id, role 
       FROM faculty
       WHERE gmail = ? 
       UNION  
-      SELECT id, name, gmail, reg_no, NULL AS staff_id, role
-      FROM students
-      WHERE gmail = ?
+     SELECT 
+   s.id,            
+   s.NAME,          
+   s.gmail,       
+   s.reg_no,        
+   d.department,    
+   NULL AS staff_id,
+   s.ROLE           
+FROM students s
+LEFT JOIN departments d 
+   ON d.id = s.department
+WHERE s.gmail = ?;
     `;
         const results = await get_database(query, [gmail, gmail]);
     

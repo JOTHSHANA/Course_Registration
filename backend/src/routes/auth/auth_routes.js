@@ -49,6 +49,7 @@ const generateToken = (user) => {
       role: user.role,
       reg_no:user.reg_no,
       gmail: user.gmail,
+      dept:user.department,
       profile: user.profilePhoto,
     },
     JWT_SECRET,
