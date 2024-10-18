@@ -58,3 +58,35 @@ exports.stuAvailable = async (req, res) => {
         res.status(500).json({ error: "Error fetching available courses" });
     }
 };
+
+exports.request = async (req, res) => {
+    const { student, f_course, t_course } = req.body;
+    
+    if (!student || !f_course || !t_course) {
+        return res.status(400).json({ error: "Student, f_course, and t_course are required..." });
+    }
+
+    try {
+        const getCount = `
+        SELECT count FROM request WHERE student = ?
+        `;
+        const CountResult = await post_database(getCount, [student]);
+        console.log(CountResult);
+
+        let reqCount = 0;
+
+        if (CountResult.length > 0 && CountResult[0].count !== null) {
+            reqCount = CountResult[0].count;
+        }
+
+        const insertRequest = `
+        INSERT INTO request (student, f_course, t_course, count) VALUES (?, ?, ?, ?)
+        `;
+        await post_database(insertRequest, [student, f_course, t_course, reqCount + 1]);
+
+        res.status(200).json({ message: "Posted Successfully", request: { student, f_course, t_course, count: reqCount + 1 } });
+    } catch (err) {
+        console.error("Error Inserting Request", err);
+        res.status(500).json({ error: "Error Inserting Request" });
+    }
+};
