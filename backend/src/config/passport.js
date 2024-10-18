@@ -22,7 +22,7 @@ passport.use(
         const email = profile.emails[0].value;
         const profilePhoto = profile.photos[0]?.value;
 
-        const mentorQuery = "SELECT id, name, gmail, role, FROM faculty WHERE gmail = ?";
+        const mentorQuery = "SELECT id, name, gmail, role FROM faculty WHERE gmail = ?";
         let results = await get_database(mentorQuery, [email]);
 
         if (results.length > 0) {
