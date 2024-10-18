@@ -15,6 +15,7 @@ const restrictOrigin = require('./middleware/restrictOrigins')
 
 // routes import
 const auth_routes = require('./routes/auth/auth_routes')
+const resources_routes = require('./routes/auth/res_route')
 
 
 const morgan_config = morgan(
