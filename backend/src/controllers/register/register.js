@@ -1,4 +1,3 @@
-const { query } = require("express");
 const { get_database, post_database } = require("../../config/db_utils");
 
 exports.CourseRegister = async (req, res) => {
@@ -79,5 +78,27 @@ exports.getRegisteredCount = async(req, res)=>{
     catch(err){
         console.error("Error fetching Registered Count", err);
         res.status(500).json({ error: "Error fetching Registered Count" });  
+    }
+}
+
+exports.getStuRegister = async(req, res)=>{
+    const {student} = req.body
+    if(!student){
+        return res.status(400).json({error:"Student id is required..."})
+    }
+    try{
+        const query = `
+        SELECT s.id AS stu_id,s.name, s.reg_no, c.id AS course_id, 
+        c.code,c.name AS course_name FROM course_register cr
+        LEFT JOIN students s ON s.id = cr.student
+        LEFT JOIN courses c ON c.id = cr.course
+        WHERE cr.status = '1'
+        `
+        const StuRegister = await post_database(query, [student])
+        res.json(StuRegister)
+    }
+    catch(err){
+        console.error("Error fetching stu Registered Course", err);
+        res.status(500).json({ error: "Error fetching Stu Registered Course" }); 
     }
 }

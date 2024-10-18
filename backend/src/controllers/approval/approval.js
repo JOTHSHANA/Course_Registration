@@ -1,5 +1,40 @@
 const { get_database, post_database } = require("../../config/db_utils");
 
+
+exports.getApp = async(req, res)=>{
+    try{
+        const query = `
+        SELECT 
+    s.id AS student_id, 
+    s.name AS student_name, 
+    s.reg_no AS student_reg_no,
+    f.id AS f_course_id, 
+    f.code AS f_course_code, 
+    f.name AS f_course_name, 
+    f.max_count AS f_course_max_count, 
+    f_type.type AS f_course_type,
+    t.id AS t_course_id, 
+    t.code AS t_course_code, 
+    t.name AS t_course_name, 
+    t.max_count AS t_course_max_count, 
+    t_type.type AS t_course_type
+
+FROM 
+    request r
+JOIN students s ON r.student = s.id
+JOIN courses f ON r.f_course = f.id
+JOIN courses t ON r.t_course = t.id
+JOIN course_type f_type ON f.course_type = f_type.id
+JOIN course_type t_type ON t.course_type = t_type.id
+WHERE r.status = '1';
+        `
+        const Approvals = await get_database(query)
+        res.json(Approvals)
+    }catch(err){
+        console.error("Error updating course", err);
+        res.status(500).json({ error: "Error updating course" });
+    }
+}
 exports.approval = async (req, res) => {
     const { student, f_course, t_course } = req.body;
     if (!student || !f_course || !t_course) {
