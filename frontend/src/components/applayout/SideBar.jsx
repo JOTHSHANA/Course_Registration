@@ -9,6 +9,8 @@ import { getDecryptedCookie } from "../utils/encrypt";
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
 import FileUploadSharpIcon from '@mui/icons-material/FileUploadSharp';
+import ListIcon from '@mui/icons-material/List';
+import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 
 function getIconComponent(iconPath) {
   switch (iconPath) {
@@ -17,7 +19,11 @@ function getIconComponent(iconPath) {
     case 'DashboardSharpIcon':
       return <DashboardSharpIcon style={{ color: '#05ce78', fontSize: '30px' }} className="custom-sidebar-icon" />;
     case 'FileUploadSharpIcon':
-      return <FileUploadSharpIcon style={{ color: '#05ce78', fontSize: '30px' }} className="custom-sidebar-icon" />;
+      return <FileUploadSharpIcon style={{ color: 'orange', fontSize: '30px' }} className="custom-sidebar-icon" />;
+    case 'ListIcon':
+      return <ListIcon style={{ color: '#219de2', fontSize: '30px' }} className="custom-sidebar-icon" />;
+    case 'ChecklistRtlIcon':
+      return <ChecklistRtlIcon style={{ color: '#05ce78', fontSize: '30px' }} className="custom-sidebar-icon" />;
     default:
       return null;
   }
@@ -75,7 +81,7 @@ function SideBar({ open, resource, onSidebarItemSelect, handleSideBar }) {
         backgroundColor: "#2a3645",
       }}
     >
-      <p style={{ color: 'white' }} className="a-name">Mark Entry</p>
+      <p style={{ color: 'white' }} className="a-name">Course Registration</p>
       <ul className="list-div">
         {sidebarItems.map((item) => (
           <li

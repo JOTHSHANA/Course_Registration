@@ -6,7 +6,8 @@ import AppLayout from "../components/applayout/AppLayout";
 import ProtectedRoute from "../components/utils/protectedRoute";
 import Register from "../pages/Register/Register";
 import Error from "../pages/error";
-
+import Registrations from "../pages/Registrations/Registrations";
+import Approvals from "../pages/Approvals/Approvals";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -22,6 +23,8 @@ const AppRoutes = () => {
                 <Routes>
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="register" element={<Register />} />
+                  <Route path="registrations" element={<Registrations />} />
+                  <Route path="approvals" element={<Approvals />} />
                 </Routes>
               }
             />
