@@ -56,8 +56,8 @@ passport.deserializeUser(async (gmail, done) => {
       SELECT id, name, gmail, NULL AS reg_no,NULL AS department, staff_id, role 
       FROM faculty
       WHERE gmail = ? 
-      UNION 
-      SELECT 
+      UNION
+    SELECT  
      s.id,            
    s.NAME,          
    s.gmail,       

@@ -1,40 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { School, People, AddCircle, Star, Book } from '@mui/icons-material'; // Importing icons
 import './Register.css';
+import requestApi from '../../components/utils/axios';
+import { jwtDecode } from 'jwt-decode';
+import { getDecryptedCookie } from '../../components/utils/encrypt';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 function Register() {
-    const courses = [
-        { id: 1, type: 'OPEN ELECTIVE', status: 1 },
-        { id: 2, type: 'PROFESSIONAL ELECTIVE', status: 1 },
-        { id: 3, type: 'ADD ON', status: 1 },
-        { id: 4, type: 'HONOUR', status: 1 },
-        { id: 5, type: 'MINOR', status: 1 }
-    ];
 
-    // Sample data to simulate the backend response
-    const courseDetailsData = {
-        1: [
-            { id: 1, department: 'CSE', code: '22CS509', name: 'OE - I', max_count: 5, course_type: 'OPEN ELECTIVE', status: 1 },
-            { id: 2, department: 'CSE', code: '22CS508', name: 'OE - II', max_count: 5, course_type: 'OPEN ELECTIVE', status: 1 },
-            { id: 3, department: 'CSE', code: '22CS507', name: 'OE - III', max_count: 5, course_type: 'OPEN ELECTIVE', status: 1 }
-        ],
-        2: [
-            { id: 4, department: 'CSE', code: '22PE101', name: 'PE - I', max_count: 10, course_type: 'PROFESSIONAL ELECTIVE', status: 1 },
-            { id: 5, department: 'CSE', code: '22PE102', name: 'PE - II', max_count: 10, course_type: 'PROFESSIONAL ELECTIVE', status: 1 }
-        ],
-        3: [
-            { id: 6, department: 'CSE', code: '22AO101', name: 'Add-on - I', max_count: 5, course_type: 'ADD ON', status: 1 }
-        ],
-        4: [
-            { id: 7, department: 'CSE', code: '22HN101', name: 'Honour - I', max_count: 3, course_type: 'HONOUR', status: 1 }
-        ],
-        5: [
-            { id: 8, department: 'CSE', code: '22MN101', name: 'Minor - I', max_count: 5, course_type: 'MINOR', status: 1 }
-        ]
-        // You can add similar entries for other course types if needed
-    };
-
+    const [courseTypes, setCourseTypes] = useState([]);
+    const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [selectedCourseId, setSelectedCourseId] = useState(null);
+    const encryptedAuthToken = getDecryptedCookie("authToken");
+
+    if (!encryptedAuthToken) {
+        throw new Error("Auth token not found");
+    }
+
+    const decodedToken = jwtDecode(encryptedAuthToken);
+    const { dept } = decodedToken;
+    const { id } = decodedToken;
+    // console.log(dept)
 
     // Function to capitalize the first letter and make others lowercase
     const formatCourseType = (type) => {
@@ -45,32 +33,86 @@ function Register() {
     const getIconForCourse = (type) => {
         switch (type) {
             case 'OPEN ELECTIVE':
-                return <School style={{ color: 'white', backgroundColor: "#4CAF50", padding: "7px", fontSize: "35px", borderRadius: "10px" }} />;
+                return <School style={{ color: 'white', backgroundColor: "#4CAF50", padding: "7px", fontSize: "35px", borderRadius: "5px" }} />;
             case 'PROFESSIONAL ELECTIVE':
-                return <People style={{ color: 'white', backgroundColor: "#2196F3", padding: "7px", fontSize: "35px", borderRadius: "10px" }} />;
+                return <People style={{ color: 'white', backgroundColor: "#2196F3", padding: "7px", fontSize: "35px", borderRadius: "5px" }} />;
             case 'ADD ON':
-                return <AddCircle style={{ color: 'white', backgroundColor: "#FF9800", padding: "7px", fontSize: "35px", borderRadius: "10px" }} />;
+                return <AddCircle style={{ color: 'white', backgroundColor: "#FF9800", padding: "7px", fontSize: "35px", borderRadius: "5px" }} />;
             case 'HONOUR':
-                return <Star style={{ color: 'white', backgroundColor: "#FFC107", padding: "7px", fontSize: "35px", borderRadius: "10px" }} />;
+                return <Star style={{ color: 'white', backgroundColor: "#FFC107", padding: "7px", fontSize: "35px", borderRadius: "5px" }} />;
             case 'MINOR':
-                return <Book style={{ color: 'white', backgroundColor: "#9C27B0", padding: "7px", fontSize: "35px", borderRadius: "10px" }} />;
+                return <Book style={{ color: 'white', backgroundColor: "#9C27B0", padding: "7px", fontSize: "35px", borderRadius: "5px" }} />;
             default:
                 return null;
         }
     };
 
+    // const dept = 1;
+
+    const fetchCourses = async (CourseTypeid, dept) => {
+        try {
+            const result = await requestApi("POST", `/course`, {
+                type: CourseTypeid,
+                dept: dept
+            });
+
+            if (result.success) {
+                setCourses(result.data.result); // Update state with fetched courses
+                // console.log(result.data.result);
+            } else {
+                console.error("Error fetching available courses", result.error);
+            }
+        } catch (error) {
+            console.error("Error during fetch operation", error);
+        }
+    };
+
     const handleCourseClick = (id) => {
-        // Simulate fetching data from backend based on course id
-        const courseDetails = courseDetailsData[id] || [];
-        setSelectedCourse(courseDetails);
+        setSelectedCourse(id);
+        fetchCourses(id, dept);
+    };
+
+    useEffect(() => {
+        const fetchCourseTypes = async () => {
+            const result = await requestApi("GET", `/c-type`);
+            if (result.success) {
+                setCourseTypes(result.data);
+                // console.log(result.data);
+            } else {
+                console.error("Error fetching course types:", result.error);
+            }
+        };
+        fetchCourseTypes();
+    }, []);
+
+    const registerCourse = async () => {
+
+        console.log("selected id" + selectedCourseId)
+        console.log(id)
+        try {
+            const result = await requestApi("POST", `/c-register`, {
+                course: selectedCourseId,
+                student: id
+            });
+
+            if (result.success) {
+                console.log(result.data);
+                toast.success("Registration successful")
+            } else {
+                console.error("Error registering course", result.error);
+            }
+        } catch (error) {
+            console.error("Error during course registering", error);
+        }
     };
 
     return (
         <div>
+            <ToastContainer />
             {/* Render course cards only if no course is selected */}
             {!selectedCourse && (
                 <div className="course-cards">
-                    {courses.map(course => (
+                    {courseTypes.map(course => (
                         <div key={course.id} className="course-card" onClick={() => handleCourseClick(course.id)}>
                             <div className="icon-container">{getIconForCourse(course.type)}</div>
                             <p className='c_name'>{formatCourseType(course.type)}</p>
@@ -79,30 +121,34 @@ function Register() {
                 </div>
             )}
 
-            {/* Render the course details if a course is selected */}
-            {selectedCourse && (
+            {selectedCourse && courses.length > 0 && (
                 <div className="course-details">
-                    <h2>Course Details</h2>
-                    {selectedCourse.map(detail => (
+                    <p className='course-type-topic'>{courses[0].type}</p>
+                    {courses.map(detail => (
                         <div key={detail.id} className="course-detail-card">
-                            <div className="course-detail-info">
-                                <p><strong>Department:</strong> {detail.department}</p>
-                                <p><strong>Code:</strong> {detail.code}</p>
-                                <p><strong>Name:</strong> {detail.name}</p>
-                                <p><strong>Max Count:</strong> {detail.max_count}</p>
-                                <p><strong>Course Type:</strong> {detail.course_type}</p>
-                                <p><strong>Status:</strong> {detail.status === 1 ? 'Available' : 'Unavailable'}</p>
+                            <div className="radio-container">
+                                <input
+                                    type="radio"
+                                    id={`course-${detail.id}`}
+                                    name="courseSelection"
+                                    value={detail.id}
+                                    onChange={() => setSelectedCourseId(detail.id)} // Update selected course ID
+                                    className="large-radio"
+                                />
+                                <label htmlFor={`course-${detail.id}`}></label>
                             </div>
-                            <div className="checkbox-container">
-                                <input type="checkbox" id={`course-${detail.id}`} />
-                                <label htmlFor={`course-${detail.id}`}>Register</label>
-                            </div>
+                            <p style={{ paddingTop: "2px" }}>{detail.code} - {detail.name}</p>
+                            {/* <p><strong>Department:</strong> {detail.department}</p> */}
+                            {/* <p><strong>Course Type:</strong> {detail.type}</p> */}
+                            {/* <p><strong>Registered Count:</strong> {detail.registered_count}</p> */}
+
                         </div>
                     ))}
-                    <button className="register-button">Register</button>
+                    <button className="register-button" onClick={registerCourse}>
+                        Register
+                    </button>
                 </div>
             )}
-
         </div>
     );
 }

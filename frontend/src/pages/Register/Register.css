@@ -9,7 +9,7 @@
 .course-card {
     border: 1px solid #ddd;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     height: fit-content;
@@ -63,15 +63,12 @@
 }
 
 
-
-
-.course-details {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+.course-type-topic{
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
+
 
 .course-detail-card {
     background-color: #fff;
@@ -81,8 +78,10 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
+    align-items: center;
+    gap: 10px;
 }
 
 .course-detail-info {
@@ -122,4 +121,23 @@
     background-color: #ccc;
     /* Greyed out */
     cursor: not-allowed;
+}
+
+
+.large-radio {
+    width: 15px; /* Change width */
+    height: 15px; /* Change height */
+    transform: scale(1.5); /* Scale the size */
+}
+
+
+.radio-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.course-detail-info{
+    display: flex;
+    align-items: center;
 }
