@@ -62,12 +62,10 @@ passport.deserializeUser(async (gmail, done) => {
    s.NAME,          
    s.gmail,       
    s.reg_no,        
-   d.department,    
+   s.department,    
    NULL AS staff_id,
    s.ROLE           
 FROM students s
-LEFT JOIN departments d 
-   ON d.id = s.department
 WHERE s.gmail = ?;
     `;
         const results = await get_database(query, [gmail, gmail]);
