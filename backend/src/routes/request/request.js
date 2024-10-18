@@ -4,5 +4,6 @@ const Request = require('../../controllers/requests/request')
 
 router.post('/stu-course', Request.get_s_r_count)
 router.post('/stu-avail', Request.stuAvailable)
+router.post('/c-request', Request.request)
 
 module.exports = router

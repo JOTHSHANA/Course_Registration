@@ -18,6 +18,9 @@ const auth_routes = require('./routes/auth/auth_routes')
 const resources_routes = require('./routes/auth/res_route')
 const Course = require('./routes/course/course')
 const Register = require('./routes/register/register')
+const Approval = require('./routes/approval/approval')
+const request = require('./routes/request/request')
+const dept = require('./routes/dept/dept')
 
 
 const morgan_config = morgan(
@@ -56,7 +59,9 @@ app.use("/api", resources_routes);
 // app.use([authJWT, limiter, restrictOrigin])
 app.use('/api', Course)
 app.use('/api', Register)
-
+app.use('/api',Approval)
+app.use('/api', dept)
+app.use('/api', request)
 
 
 
