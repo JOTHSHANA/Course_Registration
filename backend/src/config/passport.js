@@ -22,7 +22,7 @@ passport.use(
         const email = profile.emails[0].value;
         const profilePhoto = profile.photos[0]?.value;
 
-        const mentorQuery = "SELECT id, name, gmail, role FROM faculty WHERE gmail = ?";
+        const mentorQuery = "SELECT id, name, gmail, role, FROM faculty WHERE gmail = ?";
         let results = await get_database(mentorQuery, [email]);
 
         if (results.length > 0) {
@@ -30,7 +30,7 @@ passport.use(
           return done(null, user);
         } 
 
-        const studentQuery = "SELECT id, name, gmail, reg_no, role FROM students WHERE gmail = ?";
+        const studentQuery = "SELECT id, name, gmail, reg_no,department, role FROM students WHERE gmail = ?";
         results = await get_database(studentQuery, [email]);
 
         if (results.length > 0) {
@@ -57,16 +57,15 @@ passport.deserializeUser(async (gmail, done) => {
       FROM faculty
       WHERE gmail = ? 
       UNION  
-     SELECT 
-   s.id,            
+     s.id,            
    s.NAME,          
    s.gmail,       
    s.reg_no,        
    s.department,    
    NULL AS staff_id,
    s.ROLE           
-FROM students s
-WHERE s.gmail = ?;
+    FROM students s
+    WHERE s.gmail = ?;
     `;
         const results = await get_database(query, [gmail, gmail]);
     
