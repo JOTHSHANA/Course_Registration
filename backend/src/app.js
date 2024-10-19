@@ -21,6 +21,7 @@ const Register = require('./routes/register/register')
 const Approval = require('./routes/approval/approval')
 const request = require('./routes/request/request')
 const dept = require('./routes/dept/dept')
+const Reports = require('./routes/reports/reports')
 
 
 const morgan_config = morgan(
@@ -62,6 +63,7 @@ app.use('/api', Register)
 app.use('/api',Approval)
 app.use('/api', dept)
 app.use('/api', request)
+app.use('/api', Reports)
 
 
 

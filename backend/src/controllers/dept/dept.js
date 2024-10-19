@@ -13,3 +13,17 @@ exports.get_dept = async(req, res)=> {
         res.status(500).json({ error: "Error updating course" });
     }
 }
+
+exports.get_year = async(req, res)=>{
+    try{
+        const query = `
+        SELECT * FROM years
+        `
+        const year = await get_database(query)
+        res.json(year)
+    }
+    catch(err){
+        console.error("Error Fetching years", err);
+        res.status(500).json({ error: "Error Fetching years" });
+    }
+}

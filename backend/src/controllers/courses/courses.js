@@ -26,3 +26,21 @@ exports.get_courseAvailable = async (req, res) => {
         res.status(500).json({ error: "Error fetching Course" });
     }
 };
+
+exports.getAllCourse = async(req, res)=>{
+    const {type}= req.body
+    if(!type){
+        return res.status(400).json({error:"Course type is required..."})
+    }
+    try{
+        const query = `
+        SELECT * FROM courses WHERE course_type = ?
+        `
+        const Course = await post_database(query, [type])
+        res.json(Course)
+    }
+    catch(err){
+        console.error("Error fetching All Course", err);
+        res.status(500).json({ error: "Error fetching All Course" });
+    }
+}

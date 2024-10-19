@@ -8,6 +8,7 @@ import Register from "../pages/Register/Register";
 import Error from "../pages/error";
 import Registrations from "../pages/Registrations/Registrations";
 import Approvals from "../pages/Approvals/Approvals";
+import Export from "../pages/Exports/Exports";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -25,6 +26,7 @@ const AppRoutes = () => {
                   <Route path="register" element={<Register />} />
                   <Route path="registrations" element={<Registrations />} />
                   <Route path="approvals" element={<Approvals />} />
+                  <Route path="export" element={<Export/>}/>
                 </Routes>
               }
             />

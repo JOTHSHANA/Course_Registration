@@ -1,0 +1,45 @@
+.approvals-container {
+    padding: 20px;
+  }
+  
+  .approval-card {
+    background-color: var(--background-2);
+    /* border: 1px solid #ddd; */
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-content {
+    flex: 1;
+  }
+  
+  .card-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .approve-btn, .reject-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .approve-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .reject-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }
+  

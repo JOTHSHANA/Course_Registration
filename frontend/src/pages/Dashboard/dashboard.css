@@ -4,3 +4,34 @@
     flex-direction: column;
     gap: 10px;
 }
+
+.course-flex{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.request-edit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .requested-course-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .requested-course-card {
+    background-color: var(--background-2);
+    border-radius: 8px;
+    padding: 15px;
+    width: calc(50% - 20px);
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  }
+  
+  .requested-course-card h3 {
+    margin-bottom: 10px;
+  }
+  
+  .requested-course-card p {
+    margin: 5px 0;
+  }

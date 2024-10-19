@@ -39,22 +39,37 @@ exports.CourseRegister = async (req, res) => {
 
 
 exports.get_RegisteredCourse = async(req, res)=>{
-    const {dept} = req.body
-    if(!dept){
-        return res.status(400).json({error:"Department id is required..."})
+    const {dept, year} = req.body
+    if(!dept || !year){
+        return res.status(400).json({error:"Department and year id is required..."})
     }
    try {const query = `
-    select s.id as stu_id, s.name, s.reg_no, s.gmail ,d.department, 
-ye.year, st.type,c.id as c_id, c.code, c.name AS course_name, c.max_count, ct.type as course_type from course_register cr
-left join students s on s.id = cr.student
-left join courses c on c.id = cr.course 
-left join departments d on d.id = s.department
-left join years ye on ye.id = s.year
-left join student_type st on st.id = s.type
-left join course_type ct on ct.id = c.course_type
-where cr.status = '1' and s.department = ?
+    SELECT 
+    s.id AS student_id,
+    s.name AS NAME,
+    s.reg_no AS "REGISTER NUMBER",
+    s.gmail AS GMAIL,
+    d.department AS "DEPARTMENT",
+    ye.year AS YEAR,
+    
+    MAX(CASE WHEN ct.type = 'OPEN ELECTIVE' THEN c.name ELSE NULL END) AS "OPEN ELECTIVE",
+    MAX(CASE WHEN ct.type = 'PROFESSIONAL ELECTIVE' THEN c.name ELSE NULL END) AS "PROFESSIONAL ELECTIVE",
+    MAX(CASE WHEN ct.type = 'ADD ON' THEN c.name ELSE NULL END) AS "ADD-ON COURSE",
+    MAX(CASE WHEN ct.type = 'HONOUR' THEN c.name ELSE NULL END) AS "HONOUR COURSE",
+    MAX(CASE WHEN ct.type = 'MINOR' THEN c.name ELSE NULL END) AS "MINOR COURSE"
+
+FROM students s
+LEFT JOIN course_register cr ON s.id = cr.student
+LEFT JOIN courses c ON cr.course = c.id
+LEFT JOIN course_type ct ON c.course_type = ct.id
+LEFT JOIN departments d ON s.department = d.id
+LEFT JOIN years ye ON s.year = ye.id
+WHERE s.department = ? AND s.year = ?
+
+GROUP BY s.id, s.name, s.reg_no, s.gmail, d.department, ye.year
+
     `
-    const RegisterCourse = await post_database(query, [dept])
+    const RegisterCourse = await post_database(query, [dept, year])
     res.json(RegisterCourse)}
     catch(err){
         console.error("Error fetching Registered Course", err);

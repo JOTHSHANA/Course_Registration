@@ -7,10 +7,11 @@
 }
 
 .course-card {
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     padding: 10px;
     border-radius: 5px;
-    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1); */
+    background-color: var(--background-2);
     box-sizing: border-box;
     height: fit-content;
     cursor: pointer;
@@ -19,9 +20,9 @@
     align-items: center;
 }
 
-.course-card:hover {
+/* .course-card:hover {
     background-color: rgba(128, 128, 128, 0.19);
-}
+} */
 
 .course-card h2 {
     font-size: 18px;

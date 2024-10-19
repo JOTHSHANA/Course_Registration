@@ -5,7 +5,7 @@ import requestApi from '../../components/utils/axios';
 import { jwtDecode } from 'jwt-decode';
 import { getDecryptedCookie } from '../../components/utils/encrypt';
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"
+import "react-toastify/dist/ReactToastify.css";
 
 function Register() {
 
@@ -22,14 +22,12 @@ function Register() {
     const decodedToken = jwtDecode(encryptedAuthToken);
     const { dept } = decodedToken;
     const { id } = decodedToken;
-    // console.log(dept)
+    
 
-    // Function to capitalize the first letter and make others lowercase
     const formatCourseType = (type) => {
         return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     };
 
-    // Function to render the correct icon based on the course type
     const getIconForCourse = (type) => {
         switch (type) {
             case 'OPEN ELECTIVE':
@@ -47,8 +45,6 @@ function Register() {
         }
     };
 
-    // const dept = 1;
-
     const fetchCourses = async (CourseTypeid, dept) => {
         try {
             const result = await requestApi("POST", `/course`, {
@@ -57,8 +53,7 @@ function Register() {
             });
 
             if (result.success) {
-                setCourses(result.data.result); // Update state with fetched courses
-                // console.log(result.data.result);
+                setCourses(result.data.result); 
             } else {
                 console.error("Error fetching available courses", result.error);
             }
@@ -72,23 +67,26 @@ function Register() {
         fetchCourses(id, dept);
     };
 
-    useEffect(() => {
-        const fetchCourseTypes = async () => {
-            const result = await requestApi("GET", `/c-type`);
+    const fetchCourseTypes = async () => {
+        try {
+            const result = await requestApi("POST", `/c-type`,{
+                student: id
+            });
             if (result.success) {
                 setCourseTypes(result.data);
-                // console.log(result.data);
             } else {
                 console.error("Error fetching course types:", result.error);
             }
-        };
+        } catch (error) {
+            console.error("Error during fetchCourseTypes:", error);
+        }
+    };
+
+    useEffect(() => {
         fetchCourseTypes();
     }, []);
 
     const registerCourse = async () => {
-
-        console.log("selected id" + selectedCourseId)
-        console.log(id)
         try {
             const result = await requestApi("POST", `/c-register`, {
                 course: selectedCourseId,
@@ -96,8 +94,10 @@ function Register() {
             });
 
             if (result.success) {
-                console.log(result.data);
-                toast.success("Registration successful")
+                toast.success("Registration successful");
+
+                fetchCourseTypes();
+                setSelectedCourse(null); 
             } else {
                 console.error("Error registering course", result.error);
             }
@@ -109,7 +109,6 @@ function Register() {
     return (
         <div>
             <ToastContainer />
-            {/* Render course cards only if no course is selected */}
             {!selectedCourse && (
                 <div className="course-cards">
                     {courseTypes.map(course => (
@@ -138,10 +137,6 @@ function Register() {
                                 <label htmlFor={`course-${detail.id}`}></label>
                             </div>
                             <p style={{ paddingTop: "2px" }}>{detail.code} - {detail.name}</p>
-                            {/* <p><strong>Department:</strong> {detail.department}</p> */}
-                            {/* <p><strong>Course Type:</strong> {detail.type}</p> */}
-                            {/* <p><strong>Registered Count:</strong> {detail.registered_count}</p> */}
-
                         </div>
                     ))}
                     <button className="register-button" onClick={registerCourse}>

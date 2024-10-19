@@ -17,7 +17,8 @@ exports.getApp = async(req, res)=>{
     t.code AS t_course_code, 
     t.name AS t_course_name, 
     t.max_count AS t_course_max_count, 
-    t_type.type AS t_course_type
+    t_type.type AS t_course_type,
+    r.count
 
 FROM 
     request r
