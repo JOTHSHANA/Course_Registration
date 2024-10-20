@@ -137,7 +137,7 @@ function Registrations() {
                      />
                  </div>
             ) : (
-                <p>No students registered for the selected department and year.</p>
+                <p className='no-records'>No students registered for the selected department and year.</p>
             )}
         </div>
     );

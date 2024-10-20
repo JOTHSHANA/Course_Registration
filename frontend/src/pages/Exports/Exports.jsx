@@ -221,7 +221,7 @@ function Export() {
                     </div>
                 </div>
             ) : (
-                <p>No students registered for the selected course.</p>
+                <p className='no-records'>No students registered for the selected course.</p>
             )}
         </div>
     );

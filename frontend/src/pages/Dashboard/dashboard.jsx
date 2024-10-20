@@ -15,7 +15,7 @@ function Dashboard() {
   const [previousCourseId, setPreviousCourseId] = useState(null);
   const [requestedCourses, setRequestedCourses] = useState([]);
   const [rejectedCourse, setRejectedCourse] = useState([]);
-  const [editMode, setEditMode] = useState(false); 
+  const [editMode, setEditMode] = useState(false);
   const encryptedAuthToken = getDecryptedCookie("authToken");
 
   if (!encryptedAuthToken) {
@@ -95,6 +95,8 @@ function Dashboard() {
     } catch (error) {
       console.error("Error during fetch available courses", error);
     }
+    fetchRequestedCourses();
+
   };
 
   const handleCourseSelect = (courseId) => {
@@ -126,34 +128,38 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      <EButton onClick={handleToggleEditMode} className="top-request-edit-btn" label={editMode ? "Disable Course Edit" : "Enable Course Edit"} />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+        <EButton onClick={handleToggleEditMode} className="top-request-edit-btn" label={editMode ? "Disable Course Edit" : "Request Course Change"} />
+      </div>
 
-      <h3>My Registered Courses</h3>
+      <p className='heading'>My Courses</p>
       {myRegisteredCourses.length > 0 ? (
         <div className="course-card-container">
           {myRegisteredCourses.map((course, index) => (
-            <div className="course-card" key={index}>
+            <div className="course-cardd" key={index}>
               <div className='course-flex'>
-                <h3 className="course-name">{course.course_type}</h3>
-                <p><strong>Course:</strong> {course.code} - {course.course_name} </p>
-                <p><strong>Department:</strong> {course.department}</p>
+                <p className="course-name">{course.course_type} ({course.department})</p>
+                <p><b>{course.code}</b> - {course.course_name} </p>
+                <p></p>
               </div>
               {editMode && course.edit === "1" && (
-                <EButton
-                  className="request-edit-button"
-                  onClick={() => handleRequestEdit(course.c_id)}
-                  label="Request Edit"
-                />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                  <EButton
+                    className="request-edit-button"
+                    onClick={() => handleRequestEdit(course.c_id)}
+                    label="Request Edit"
+                  />
+                </div>
               )}
             </div>
           ))}
         </div>
       ) : (
-        <p>No Registered Course...</p>
+        <p className='no-records'>No Registered Course...</p>
       )}
       <br />
 
-      <h3>Requested Course Changes</h3>
+      <p className='heading'>Requested Course Changes</p>
       {requestedCourses.length > 0 ? (
         <div className="requested-course-card-container">
           {requestedCourses.map((request, index) => (
@@ -165,11 +171,11 @@ function Dashboard() {
           ))}
         </div>
       ) : (
-        <p>No Requested Course records...</p>
+        <p className='no-records'>No Requested Course records...</p>
       )}
       <br />
 
-      <h3>Rejected Course Changes</h3>
+      <p className='heading'>Rejected Course Changes</p>
       {rejectedCourse.length > 0 ? (
         <div className="requested-course-card-container">
           {rejectedCourse.map((request, index) => (
@@ -182,10 +188,10 @@ function Dashboard() {
           ))}
         </div>
       ) : (
-        <div>No Rejected Course records...</div>
+        <div className='no-records'>No Rejected Course records...</div>
       )}
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <Dialog fullWidth open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Select New Course</DialogTitle>
         <DialogContent>
           {availableCourses.map((course) => (
