@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import requestApi from "../../components/utils/axios"; 
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import RButton from '../../components/Button/RejectButton';
+import AButton from '../../components/Button/ApproveButton';
 import './Approvals.css'; 
 
 function Approvals() {
@@ -84,21 +86,23 @@ function Approvals() {
     <div className="approvals-container">
       {approvals.length === 0 && <p>No approval requests available.</p>}
 
-      {approvals.map((approval) => (
-        <div key={approval.student_id} className="approval-card">
-          <div className="card-content">
-            <h3>{approval.student_name} ({approval.student_reg_no})</h3>
-            <p><strong>Register Course:</strong> {approval.f_course_code} - {approval.f_course_name} ({approval.f_course_type})</p>
-            <p><strong>Requested Course:</strong> {approval.t_course_code} - {approval.t_course_name} ({approval.t_course_type})</p>
-            <p><strong>Requested Count:</strong> {approval.count} </p>
-
-          </div>
-          <div className="card-actions">
-            <button className="approve-btn" onClick={() => handleApprove(approval)}>Approve</button>
-            <button className="reject-btn" onClick={() => handleReject(approval)}>Reject</button>
-          </div>
+      <div className="approval-grid">
+  {approvals.map((approval) => (
+    <div key={approval.student_id} className="approval-card">
+      <div className="card-content">
+        <h4>{approval.student_name} ({approval.student_reg_no})</h4>
+        <hr />
+        <p><strong>Registered Course:</strong> {approval.f_course_code} - {approval.f_course_name} ({approval.f_course_type})</p>
+        <p><strong>Requested Course:</strong> {approval.t_course_code} - {approval.t_course_name} ({approval.t_course_type})</p>
+        <p><strong>Requested Count:</strong> {approval.count}</p>
+        <div className="button-group">
+          <AButton  onClick={() => handleApprove(approval)} label="Approve" />
+          <RButton  onClick={() => handleReject(approval)} label="Reject" />
         </div>
-      ))}
+      </div>
+    </div>
+  ))}
+</div>
 
       <Dialog open={openApproveDialog} fullWidth onClose={() => setOpenApproveDialog(false)}>
         <DialogTitle>Confirm Approval</DialogTitle>

@@ -8,7 +8,8 @@ exports.get_s_r_count = async(req,res) => {
     try{
         const query = `
          select s.id as stu_id, s.name, s.reg_no, s.gmail ,d.department, 
-ye.year, st.type,c.id as c_id, c.code, c.name AS course_name, c.max_count, ct.type as course_type from course_register cr
+ye.year, st.type,c.id as c_id, c.code, c.name AS course_name, c.max_count,
+ct.type as course_type,cr.edit_status as edit from course_register cr
 left join students s on s.id = cr.student
 left join courses c on c.id = cr.course 
 left join departments d on d.id = s.department
@@ -68,6 +69,7 @@ exports.request = async (req, res) => {
     }
 
     try {
+        
         const getCount = `
         SELECT count FROM request WHERE student = ?
         `;
@@ -84,7 +86,12 @@ exports.request = async (req, res) => {
         INSERT INTO request (student, f_course, t_course, count) VALUES (?, ?, ?, ?)
         `;
         await post_database(insertRequest, [student, f_course, t_course, reqCount + 1]);
-
+        
+        const updateEditStatus = `
+        UPDATE course_register SET edit_status = '0'
+        WHERE student = ? AND course = ?
+        `
+        await post_database(updateEditStatus, [student, f_course])
         res.status(200).json({ message: "Posted Successfully", request: { student, f_course, t_course, count: reqCount + 1 } });
     } catch (err) {
         console.error("Error Inserting Request", err);

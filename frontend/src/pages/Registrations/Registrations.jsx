@@ -3,7 +3,8 @@ import Select from 'react-select';
 import requestApi from '../../components/utils/axios';
 import RegistrationsTable from './RegistrationsTable'; 
 import customStyles from '../../components/applayout/selectTheme';
-import * as XLSX from 'xlsx'; // Import the xlsx library
+import * as XLSX from 'xlsx';
+import DButton from '../../components/Button/DownloadButton';
 import './Registrations.css';
 
 function Registrations() {
@@ -123,12 +124,18 @@ function Registrations() {
                 </div>
             </div>
             <br />
-            <button onClick={downloadExcel} disabled={registeredStudents.length === 0}>
-                Download Excel
-            </button>
-            <h3>Registered Students:</h3>
+           
+            <h3>Registered Students</h3>
             {registeredStudents.length > 0 ? (
-                <RegistrationsTable students={registeredStudents} />
+                 <div>
+                    
+                     <RegistrationsTable students={registeredStudents} />
+                     <br />
+
+                     <DButton onClick={downloadExcel} disabled={registeredStudents.length === 0}
+                     label="Download Excel"
+                     />
+                 </div>
             ) : (
                 <p>No students registered for the selected department and year.</p>
             )}

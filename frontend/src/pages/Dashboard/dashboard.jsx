@@ -4,6 +4,7 @@ import { getDecryptedCookie } from "../../components/utils/encrypt";
 import { jwtDecode } from 'jwt-decode';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Checkbox, FormControlLabel } from '@mui/material';
 import './dashboard.css';
+import EButton from '../../components/Button/EditButton';
 
 function Dashboard() {
 
@@ -13,7 +14,8 @@ function Dashboard() {
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [previousCourseId, setPreviousCourseId] = useState(null);
   const [requestedCourses, setRequestedCourses] = useState([]);
-  const [rejectedCourse, setRejectedCourse] = useState([])
+  const [rejectedCourse, setRejectedCourse] = useState([]);
+  const [editMode, setEditMode] = useState(false); 
   const encryptedAuthToken = getDecryptedCookie("authToken");
 
   if (!encryptedAuthToken) {
@@ -22,6 +24,7 @@ function Dashboard() {
 
   const decodedToken = jwtDecode(encryptedAuthToken);
   const { id } = decodedToken;
+
   const fetchMyRegisteredCourses = async () => {
     try {
       const result = await requestApi("POST", `/stu-course`, {
@@ -54,7 +57,7 @@ function Dashboard() {
     }
   };
 
-  const fetchRejectedCourse = async()=>{
+  const fetchRejectedCourse = async () => {
     try {
       const result = await requestApi("POST", `/stu-rej`, {
         student: id
@@ -69,10 +72,11 @@ function Dashboard() {
       console.error("Error during fetch rejected courses", error);
     }
   }
+
   useEffect(() => {
     fetchMyRegisteredCourses();
     fetchRequestedCourses();
-    fetchRejectedCourse()
+    fetchRejectedCourse();
   }, [id]);
 
   const handleRequestEdit = async (courseId) => {
@@ -116,63 +120,70 @@ function Dashboard() {
     }
   };
 
+  const handleToggleEditMode = () => {
+    setEditMode((prevEditMode) => !prevEditMode);
+  };
+
   return (
     <div className="dashboard">
+      <EButton onClick={handleToggleEditMode} className="top-request-edit-btn" label={editMode ? "Disable Course Edit" : "Enable Course Edit"} />
+
       <h3>My Registered Courses</h3>
-      {myRegisteredCourses.length >0 ?(<div className="course-card-container">
-        {myRegisteredCourses.map((course, index) => (
-          <div className="course-card" key={index}>
-            <div className='course-flex'>
-              <h3 className="course-name">{course.course_type}</h3>
-              <p><strong>Course:</strong> {course.code}- {course.course_name} </p>
-              <p><strong>Department:</strong> {course.department}</p>
+      {myRegisteredCourses.length > 0 ? (
+        <div className="course-card-container">
+          {myRegisteredCourses.map((course, index) => (
+            <div className="course-card" key={index}>
+              <div className='course-flex'>
+                <h3 className="course-name">{course.course_type}</h3>
+                <p><strong>Course:</strong> {course.code} - {course.course_name} </p>
+                <p><strong>Department:</strong> {course.department}</p>
+              </div>
+              {editMode && course.edit === "1" && (
+                <EButton
+                  className="request-edit-button"
+                  onClick={() => handleRequestEdit(course.c_id)}
+                  label="Request Edit"
+                />
+              )}
             </div>
-            <button
-              className="request-edit-button"
-              onClick={() => handleRequestEdit(course.c_id)}
-            >
-              Request Edit
-            </button>
-          </div>
-        ))}
-      </div>)
-    :(
-      <p>No Registered Course...</p>
-    )  
-    }
-    <br />
+          ))}
+        </div>
+      ) : (
+        <p>No Registered Course...</p>
+      )}
+      <br />
 
       <h3>Requested Course Changes</h3>
-      {requestedCourses.length >0 ?(<div className="requested-course-card-container">
-        {requestedCourses.map((request, index) => (
-          <div className="requested-course-card" key={index}>
-            {/* <h3>{request.student_name} ({request.student_reg_no})</h3> */}
-            <p><strong>Registered Course:</strong> {request.f_course_code} - {request.f_course_name} ({request.f_course_type})</p>
-            <p><strong>Requested Course:</strong> {request.t_course_code} - {request.t_course_name} ({request.t_course_type})</p>
-            <p><strong>Requested Count:</strong> {request.count}</p>
-          </div>
-        ))}
-      </div>)
-      :(
+      {requestedCourses.length > 0 ? (
+        <div className="requested-course-card-container">
+          {requestedCourses.map((request, index) => (
+            <div className="requested-course-card" key={index}>
+              <p><strong>Registered Course:</strong> {request.f_course_code} - {request.f_course_name} ({request.f_course_type})</p>
+              <p><strong>Requested Course:</strong> {request.t_course_code} - {request.t_course_name} ({request.t_course_type})</p>
+              <p><strong>Requested Count:</strong> {request.count}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
         <p>No Requested Course records...</p>
       )}
-  <br />
+      <br />
+
       <h3>Rejected Course Changes</h3>
-      { rejectedCourse.length >0 ? (<div className="requested-course-card-container">
-        {rejectedCourse.map((request, index) => (
-          <div className="requested-course-card" key={index}>
-            {/* <h3>{request.student_name} ({request.student_reg_no})</h3> */}
-            <p><strong>Course Registered:</strong> {request.f_course_code} - {request.f_course_name} ({request.f_course_type})</p>
-            <p><strong>Requested Course:</strong> {request.t_course_code} - {request.t_course_name} ({request.t_course_type})</p>
-            <p><strong>Requested Count:</strong> {request.count}</p>
-            <p><strong>Reason:</strong> {request.reason}</p>
-          </div>
-        ))}
-      </div>)
-    :(
-      <div>No Rejected Course records...</div>
-    )  
-    }
+      {rejectedCourse.length > 0 ? (
+        <div className="requested-course-card-container">
+          {rejectedCourse.map((request, index) => (
+            <div className="requested-course-card" key={index}>
+              <p><strong>Course Registered:</strong> {request.f_course_code} - {request.f_course_name} ({request.f_course_type})</p>
+              <p><strong>Requested Course:</strong> {request.t_course_code} - {request.t_course_name} ({request.t_course_type})</p>
+              <p><strong>Requested Count:</strong> {request.count}</p>
+              <p><strong>Reason:</strong> {request.reason}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>No Rejected Course records...</div>
+      )}
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Select New Course</DialogTitle>

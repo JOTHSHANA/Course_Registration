@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { DataGrid } from '@mui/x-data-grid';
-import requestApi from '../../components/utils/axios';  
-import customStyles from '../../components/applayout/selectTheme'; 
-import * as XLSX from 'xlsx'; // Import xlsx for Excel export
+import requestApi from '../../components/utils/axios';
+import DButton from '../../components/Button/DownloadButton';
+import customStyles from '../../components/applayout/selectTheme';
+import * as XLSX from 'xlsx'; 
 
 function Export() {
     const [selectedYear, setSelectedYear] = useState(null);
@@ -23,8 +24,8 @@ function Export() {
         const fetchData = async () => {
             try {
                 const [yearResult, deptResult, courseTypeResult] = await Promise.all([
-                    requestApi('GET', '/year'), 
-                    requestApi('GET', '/dept'), 
+                    requestApi('GET', '/year'),
+                    requestApi('GET', '/dept'),
                     requestApi('GET', '/course-type')
                 ]);
 
@@ -77,7 +78,7 @@ function Export() {
                     console.error('Error fetching courses:', error);
                 }
             } else {
-                setCourses([]);  
+                setCourses([]);
             }
         };
 
@@ -91,14 +92,14 @@ function Export() {
                     const reportResult = await requestApi('POST', '/c-report', { course: selectedCourse.value });
 
                     if (reportResult.success) {
-                        setStudents(reportResult.data.students.result); 
+                        setStudents(reportResult.data.students.result);
                         setRCount(reportResult.data.student_count);
                     }
                 } catch (error) {
                     console.error('Error fetching course report:', error);
                 }
             } else {
-                setStudents([]);  
+                setStudents([]);
             }
         };
 
@@ -120,34 +121,35 @@ function Export() {
             alert('No data to export!');
             return;
         }
-    
+
         const wb = XLSX.utils.book_new();
-    
+
         const wsData = [];
-    
+
         wsData.push([`Student Count: ${rCount}`]);
-    
+
         wsData.push(["S.No", "Name", "Register Number", "Gmail", "Department", "Year", "Course Code", "Course Name"]);
-    
+
         students.forEach((student, index) => {
             wsData.push([
                 index + 1,
-                student.name, 
-                student.reg_no, 
-                student.gmail, 
-                student.department, 
-                student.year, 
-                student.code, 
+                student.name,
+                student.reg_no,
+                student.gmail,
+                student.department,
+                student.year,
+                student.code,
                 student.course_name
             ]);
         });
-    
+
         const ws = XLSX.utils.aoa_to_sheet(wsData);
-    
+
         XLSX.utils.book_append_sheet(wb, ws, "Course Report");
-    
+
         XLSX.writeFile(wb, `${selectedCourse.label}.xlsx`);
     };
+
     return (
         <div>
             <h3>Courses</h3>
@@ -161,6 +163,7 @@ function Export() {
                         placeholder="Select Year"
                         isClearable
                         styles={customStyles}
+                        isDisabled={false} // Year dropdown is always enabled
                     />
                 </div>
                 <div className="r-select">
@@ -171,6 +174,7 @@ function Export() {
                         placeholder="Select Department"
                         isClearable
                         styles={customStyles}
+                        isDisabled={!selectedYear} // Disabled until a year is selected
                     />
                 </div>
                 <div className="r-select">
@@ -181,6 +185,7 @@ function Export() {
                         placeholder="Select Course Type"
                         isClearable
                         styles={customStyles}
+                        isDisabled={!selectedYear || !selectedDepartment} // Disabled until both year and department are selected
                     />
                 </div>
                 <div className="r-select">
@@ -191,26 +196,30 @@ function Export() {
                         placeholder="Select Course"
                         isClearable
                         styles={customStyles}
+                        isDisabled={!selectedCourseType} // Disabled until a course type is selected
                     />
                 </div>
             </div>
             <br />
             <h3>Course Report:</h3>
             {students.length > 0 ? (
-            <div>
-                <p>Registered Count: {rCount}</p>
-                <div style={{ height: 400 }}>
-                    <DataGrid
-                        rows={students}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5, 10, 20]}
-                        disableSelectionOnClick
-                        getRowId={(row) => row.reg_no}
-                    />
+                <div>
+                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                        <p>Registered Count: {rCount}</p>
+                        <DButton onClick={exportToExcel} label= "Export to Excel"/>
+                    </div>
+                    <br />
+                    <div style={{ height: 400 }}>
+                        <DataGrid
+                            rows={students}
+                            columns={columns}
+                            pageSize={5}
+                            rowsPerPageOptions={[5, 10, 20]}
+                            disableSelectionOnClick
+                            getRowId={(row) => row.reg_no}
+                        />
+                    </div>
                 </div>
-                <button onClick={exportToExcel}>Export to Excel</button>
-            </div>
             ) : (
                 <p>No students registered for the selected course.</p>
             )}
